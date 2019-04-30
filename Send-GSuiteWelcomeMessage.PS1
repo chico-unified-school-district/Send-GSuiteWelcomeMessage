@@ -52,7 +52,7 @@ foreach  (	$user in $newEmployees ){
  # To = "<{0}>" -f $user.homepage
  # Bcc = '<jcooper@chicousd.org>'
 	$mailParams = @{
-		To = '<jcooper@chicousd.org>'
+  To = '<jcooper@chicousd.org>'
 		From =  "Welcome to CUSD! <{0}>" -f $EmailCredential.Username
 		Subject = 'Your New CUSD Google Account'
 		BodyAsHTML = $True
@@ -61,8 +61,9 @@ foreach  (	$user in $newEmployees ){
 		Cred = $EmailCredential
 		UseSSL = $True
 		Port = 587
-		}
+ }
 	
+ Add-Log email ("{0},GSuite Welcome message" -f $user.homepage)
 	if ($WhatIf) { Write-Verbose ($to,$html | Out-String) }
  else { Send-MailMessage @mailParams }
  
