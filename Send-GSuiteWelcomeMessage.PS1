@@ -63,11 +63,11 @@ foreach  (	$user in $newEmployees ){
 		Port = 587
  }
 	
- Add-Log email ("{0},GSuite Welcome message" -f $user.homepage)
+ Add-Log email ("{0},GSuite Welcome message sent" -f $user.homepage)
 	if ($WhatIf) { Write-Verbose ($to,$html | Out-String) }
  else { Send-MailMessage @mailParams }
  
- Set-ADUser -Identity $user.ObjectGuid -replace @{extensionAttribute9="GSuiteMessageSent"} -WhatIf
+ Set-ADUser -Identity $user.ObjectGuid -replace @{extensionAttribute9="GSuiteMessageSent"} -WhatIf:$WhatIf
 }
 
 Add-Log script "Tearing down PS Sessions..."
