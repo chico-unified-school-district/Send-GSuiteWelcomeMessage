@@ -48,11 +48,10 @@ $newEmployees = Get-ADUser @employeeParams | Where-Object {$_.whencreated -gt (g
 foreach  (	$user in $newEmployees ){
  Write-Debug ("Process {0} ?" -f $user.name)
 	$html = Format-GSuiteMessage $user.givenName $user.samAccountName
-	
- # To = "<{0}>" -f $user.homepage
- # Bcc = '<jcooper@chicousd.org>'
+ To = '<jcooper@chicousd.org>'
 	$mailParams = @{
-  To = '<jcooper@chicousd.org>'
+  To = "<{0}>" -f $user.homepage
+  Bcc = '<jcooper@chicousd.org>'
 		From =  "Welcome to CUSD! <{0}>" -f $EmailCredential.Username
 		Subject = 'Your New CUSD Google Account'
 		BodyAsHTML = $True
