@@ -1,0 +1,10 @@
+*.zip
+*.log
+*.pw
+log/*
+logs/*
+Messages/GAFEQueue/*
+*.desktop.ini
+*.html
+*.cp
+*oauth2.txt
