@@ -47,15 +47,14 @@ $newEmployees = Get-ADUser @employeeParams | Where-Object {$_.whencreated -gt (g
 
 foreach  (	$user in $newEmployees ){
  Write-Debug ("Process {0} ?" -f $user.name)
-	$html = Format-GSuiteMessage $user.givenName $user.samAccountName
- To = '<jcooper@chicousd.org>'
+ 
 	$mailParams = @{
-  To = "<{0}>" -f $user.homepage
+  To =  ( $To = "<{0}>" -f $user.homepage )
   Bcc = '<jcooper@chicousd.org>'
 		From =  "Welcome to CUSD! <{0}>" -f $EmailCredential.Username
 		Subject = 'Your New CUSD Google Account'
 		BodyAsHTML = $True
-		Body = $html
+		Body = ( $html = Format-GSuiteMessage $user.givenName $user.samAccountName )
 		SMTPServer = 'smtp.gmail.com'
 		Cred = $EmailCredential
 		UseSSL = $True
@@ -63,7 +62,7 @@ foreach  (	$user in $newEmployees ){
  }
 	
  Add-Log email ("{0},GSuite Welcome message sent" -f $user.homepage)
-	if ($WhatIf) { Write-Verbose ($to,$html | Out-String) }
+	if ($WhatIf) { $to,$html }
  else { Send-MailMessage @mailParams }
  
  Set-ADUser -Identity $user.ObjectGuid -replace @{extensionAttribute9="GSuiteMessageSent"} -WhatIf:$WhatIf
