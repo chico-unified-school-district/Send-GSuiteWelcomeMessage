@@ -4,6 +4,7 @@
 log/*
 logs/*
 Messages/GAFEQueue/*
+.desktop.ini
 *.desktop.ini
 *.html
 *.cp
