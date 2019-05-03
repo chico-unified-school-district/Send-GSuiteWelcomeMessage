@@ -34,7 +34,6 @@ Import-PSSession -Session $adSession -Module ActiveDirectory -CommandName $adCmd
 
 # Imported Functions
 . .\lib\Add-Log.ps1
-. .\lib\Format-GSuiteMessage.ps1
 
 # LDAPFilter looks for employeeID,gsuite address, and extensionAttribute9 != GSuiteMessageSent
 $employeeParams = @{
@@ -44,6 +43,7 @@ $employeeParams = @{
 }
 # Get qualifying employee user objects
 $newEmployees = Get-ADUser @employeeParams | Where-Object {$_.whencreated -gt (get-date).adddays(-5)}
+$htmlMessage = Get-Content -Path '.\lib\GSuiteMessage.txt' -Raw
 
 foreach  (	$user in $newEmployees ){
  Write-Debug ("Process {0} ?" -f $user.name)
@@ -54,7 +54,7 @@ foreach  (	$user in $newEmployees ){
 		From =  "Welcome to CUSD! <{0}>" -f $EmailCredential.Username
 		Subject = 'Your New CUSD Google Account'
 		BodyAsHTML = $True
-		Body = ( $html = Format-GSuiteMessage $user.givenName $user.samAccountName )
+		Body = ( $html =  $htmlMessage -f $user.givenName,$user.samAccountName )
 		SMTPServer = 'smtp.gmail.com'
 		Cred = $EmailCredential
 		UseSSL = $True
