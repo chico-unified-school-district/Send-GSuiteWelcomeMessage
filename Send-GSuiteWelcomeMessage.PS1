@@ -21,7 +21,7 @@ param (
  [Parameter(Mandatory=$True)]
  [Alias('MailCred')]
  [System.Management.Automation.PSCredential]$EmailCredential,
-	[SWITCH]$WhatIf
+	[switch]$WhatIf
 )
 
 # Clear-Host ; $error.clear() # Clear screen and error log.
