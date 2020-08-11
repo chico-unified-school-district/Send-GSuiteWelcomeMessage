@@ -21,6 +21,8 @@ param (
  [Parameter(Mandatory = $True)]
  [Alias('MailCred')]
  [System.Management.Automation.PSCredential]$EmailCredential,
+ [Parameter(Mandatory = $False)]
+ [array]$Bcc,
 	[switch]$WhatIf
 )
 
@@ -47,24 +49,25 @@ $htmlMessage = Get-Content -Path '.\lib\GSuiteMessage.txt' -Raw
 
 foreach (	$user in $newEmployees ) {
  Write-Debug ("Process {0} ?" -f $user.name)
- 
+
 	$mailParams = @{
   To         = ( $To = "<{0}>" -f $user.homepage )
-  Bcc        = '<jcooper@chicousd.org>'
-		From       = "Welcome to CUSD! <{0}>" -f $EmailCredential.Username
-		Subject    = 'Your New CUSD Google Account'
-		BodyAsHTML = $True
-		Body       = ( $html = $htmlMessage -f $user.givenName, $user.samAccountName )
-		SMTPServer = 'smtp.gmail.com'
-		Cred       = $EmailCredential
-		UseSSL     = $True
-		Port       = 587
+  From       = "Welcome to CUSD! <{0}>" -f $EmailCredential.Username
+  Subject    = 'Your New CUSD Google Account'
+  BodyAsHTML = $True
+  Body       = ( $html = $htmlMessage -f $user.givenName, $user.samAccountName )
+  SMTPServer = 'smtp.gmail.com'
+  Cred       = $EmailCredential
+  UseSSL     = $True
+  Port       = 587
  }
-	
+
+ if ( $Bcc ) { $mailParams.Bcc = $Bcc ;$mailParams }
+
  Add-Log email ("{0},GSuite Welcome message sent" -f $user.homepage)
 	if ($WhatIf) { $to, $html }
  else { Send-MailMessage @mailParams }
- 
+
  Set-ADUser -Identity $user.ObjectGuid -replace @{extensionAttribute9 = "GSuiteMessageSent" } -WhatIf:$WhatIf
 }
 
